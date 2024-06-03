@@ -45,3 +45,26 @@ SELECT
 FROM datascience_salaries.salaries sal
 JOIN datascience_salaries.company com
 ON sal.employee_id = com.employee_id;
+
+
+-- Highest average salary by company location
+
+SELECT  com.company_location, ROUND(AVG(salary_in_usd),2) as average_salary
+FROM datascience_salaries.salaries sal
+JOIN datascience_salaries.company com
+ON sal.employee_id = com.employee_id
+GROUP BY com.company_location
+ORDER BY ROUND(AVG(salary_in_usd),2) desc 
+LIMIT 10;
+
+-- Using CASE statement to add column that will indicate salary type
+
+SELECT sal.employee_id, experience_level, employment_type, salary_in_usd, employee_residence, remote_ratio,  com.company_location, com.company_size,
+CASE 
+WHEN salary_in_usd <= 74999 THEN 'Low'
+WHEN salary_in_usd BETWEEN 75000 and 149999 THEN 'Medium'
+WHEN salary_in_usd >= 150000 THEN 'High'
+END as salary_type
+FROM datascience_salaries.salaries sal
+JOIN datascience_salaries.company com
+ON sal.employee_id = com.employee_id;
