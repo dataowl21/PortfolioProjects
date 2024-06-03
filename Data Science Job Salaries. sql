@@ -1,0 +1,47 @@
+/*
+
+Data Science Job Salaries Exploration
+
+Skills used: JOINS,
+
+*/
+
+SELECT * 
+FROM datascience_salaries.salaries;
+
+SELECT * 
+FROM datascience_salaries.company;
+
+-- Min and Max salary in the whole research
+
+SELECT MIN(salary_in_usd), MAX(salary_in_usd)
+FROM datascience_salaries.salaries;
+
+SELECT * 
+FROM datascience_salaries.salaries
+WHERE salary_in_usd IN (2859, 600000);
+
+-- How experience influence salary
+
+SELECT experience_level, AVG(salary_in_usd)
+FROM datascience_salaries.salaries
+GROUP BY experience_level
+ORDER BY AVG(salary_in_usd) desc;
+
+
+
+-- Using JOINT to combine rows from salaries and company tables
+
+SELECT sal.employee_id, experience_level, employment_type, salary_in_usd, employee_residence, remote_ratio,  com.company_location, com.company_size
+FROM datascience_salaries.salaries sal
+JOIN datascience_salaries.company com
+ON sal.employee_id = com.employee_id;
+
+-- Percentage of people whose country of residence is same as company location
+
+SELECT
+    ROUND(SUM(CASE WHEN employee_residence = com.company_location THEN 1 ELSE 0 END)/COUNT(sal.employee_id),2)*100 AS percentage_similar,
+   ROUND(SUM(CASE WHEN employee_residence <> com.company_location THEN 1 ELSE 0 END)/COUNT(sal.employee_id),2)*100 AS percentage_not_similar
+FROM datascience_salaries.salaries sal
+JOIN datascience_salaries.company com
+ON sal.employee_id = com.employee_id;
