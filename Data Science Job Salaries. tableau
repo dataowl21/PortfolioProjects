@@ -41,3 +41,9 @@ FROM datascience_salaries.salaries sal
 JOIN datascience_salaries.company com
 ON sal.employee_id = com.employee_id
 GROUP BY company_location;
+
+-- 7 AVERAGE salary by experience level and job title
+SELECT job_title, experience_level, AVG(salary_in_usd) as avg_salary
+FROM datascience_salaries.salaries
+GROUP BY job_title, experience_level
+ORDER BY job_title, experience_level;
