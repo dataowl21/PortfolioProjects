@@ -1,0 +1,43 @@
+-- Tableau 
+
+
+
+-- 1 Average salary in USD by experience level and employment type
+SELECT experience_level, employment_type, AVG(salary_in_usd) as avg_salary
+FROM datascience_salaries.salaries
+GROUP BY  experience_level, employment_type
+ORDER BY experience_level,employment_type;
+
+
+
+-- 2 Top 10 employee residence
+SELECT employee_residence, COUNT(employee_id)
+FROM datascience_salaries.salaries
+GROUP BY employee_residence
+ORDER BY  COUNT(employee_id) desc
+LIMIT 10;
+
+-- 3 Total companies by size and location
+SELECT *
+FROM datascience_salaries.company;
+
+-- 4 Experience level
+SELECT experience_level,  (COUNT(employee_id) / (SELECT COUNT(*) FROM datascience_salaries.salaries))
+FROM datascience_salaries.salaries
+GROUP BY experience_level
+ORDER BY experience_level;
+
+-- 5 Employment type
+
+SELECT employment_type,  (COUNT(employee_id) / (SELECT COUNT(*) FROM datascience_salaries.salaries))
+FROM datascience_salaries.salaries
+GROUP BY employment_type
+ORDER BY employment_type;
+
+-- 6 Map: average salary
+
+SELECT company_location, AVG(salary_in_usd)
+FROM datascience_salaries.salaries sal
+JOIN datascience_salaries.company com
+ON sal.employee_id = com.employee_id
+GROUP BY company_location;
