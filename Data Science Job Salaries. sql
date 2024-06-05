@@ -2,7 +2,7 @@
 
 Data Science Job Salaries Exploration
 
-Skills used: JOINS,
+Skills used:Aggregate Functions (MIN,MAX,COUNT,AVG),GROUP BY,ORDER BY, JOINS, ROUND function, Mathematical calculations,CASE statements, Common Table Expressions (CTEs), LIMIT.
 
 */
 
@@ -21,16 +21,15 @@ SELECT *
 FROM datascience_salaries.salaries
 WHERE salary_in_usd IN (2859, 600000);
 
--- How experience influence salary
+-- Correlation between salary and years of experience
 
-SELECT experience_level, AVG(salary_in_usd)
+SELECT experience_level, AVG(salary_in_usd) AS avg_salary
 FROM datascience_salaries.salaries
 GROUP BY experience_level
 ORDER BY AVG(salary_in_usd) desc;
 
 
-
--- Using JOINT to combine rows from salaries and company tables
+-- Using JOIN to combine rows from salaries and company tables
 
 SELECT sal.employee_id, experience_level, employment_type, salary_in_usd, employee_residence, remote_ratio,  com.company_location, com.company_size
 FROM datascience_salaries.salaries sal
@@ -45,7 +44,6 @@ SELECT
 FROM datascience_salaries.salaries sal
 JOIN datascience_salaries.company com
 ON sal.employee_id = com.employee_id;
-
 
 -- Highest average salary by company location
 
@@ -68,3 +66,28 @@ END as salary_type
 FROM datascience_salaries.salaries sal
 JOIN datascience_salaries.company com
 ON sal.employee_id = com.employee_id;
+
+-- Percentage of people grouped by work type (fully remote, hybrid, in-person job)
+
+WITH per_work_type AS 
+(
+    SELECT remote_ratio, 
+           COUNT(employee_id) as count_per_type,
+           (COUNT(employee_id) * 100 / (SELECT COUNT(*) FROM datascience_salaries.salaries)) as percentag
+    FROM datascience_salaries.salaries
+    GROUP BY remote_ratio
+)
+SELECT remote_ratio, count_per_type, ROUND(percentag,2) as percentage
+FROM per_work_type;
+
+
+-- Usage of CTE function to show average salary in usd by job title
+
+WITH average_salaries AS 
+(
+    SELECT job_title, ROUND(AVG(salary_in_usd),2) AS AvgSalary
+    FROM datascience_salaries.salaries
+    GROUP BY job_title
+)
+SELECT job_title, AvgSalary
+FROM average_salaries;
