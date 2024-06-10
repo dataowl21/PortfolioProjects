@@ -17,7 +17,7 @@ GROUP BY employee_residence
 ORDER BY  COUNT(employee_id) desc
 LIMIT 10;
 
--- 3 Total companies by size and location
+-- 3 Total companies by size and location (full table used)
 SELECT *
 FROM datascience_salaries.company;
 
