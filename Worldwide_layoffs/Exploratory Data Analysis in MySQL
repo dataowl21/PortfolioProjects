@@ -1,4 +1,9 @@
--- Exploratory Data Analysis
+/* 
+Exploratory Data Analysis
+
+Skills used: Joins, CTE's, Aggregate Functions.
+
+*/
 
 SELECT *
 FROM layoffs_staging2;
