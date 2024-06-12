@@ -108,3 +108,59 @@ ORDER BY 1;
 UPDATE layoffs_staging2
 SET country =  TRIM(TRAILING '.' FROM country)
 WHERE country LIKE 'United States%';
+
+-- Changing `date` data type from text to date and correct format
+
+SELECT `date`,
+STR_TO_DATE(`date`,'%m/%d/%Y')
+FROM layoffs_staging2;
+
+UPDATE layoffs_staging2
+SET `date` = STR_TO_DATE(`date`,'%m/%d/%Y');
+
+ALTER TABLE layoffs_staging2
+MODIFY COLUMN `date` DATE;
+
+-- 3. Remove Null Values or blank values
+-- Check the nulls in 'total_laid_off' column
+
+SELECT *
+FROM layoffs_staging2
+WHERE total_laid_off IS NULL
+AND percentage_laid_off IS NULL;
+-- It is not possible to populate 'total_laid_off' and 'percentage_laid_off' , because we don't have enought data
+
+-- Populate unknown industries if they had multiple layoffs
+SELECT *
+FROM layoffs_staging2
+WHERE industry IS NULL
+OR industry = '';
+
+UPDATE layoffs_staging2
+SET industry = NULL 
+WHERE industry = '';
+
+SELECT t1.industry,t2.industry
+FROM layoffs_staging2 t1
+JOIN layoffs_staging2 t2
+	ON t1.company = t2.company
+WHERE (t1.industry IS NULL OR t1.industry = '')
+AND t2.industry IS NOT NULL;
+
+UPDATE layoffs_staging2 t1
+JOIN layoffs_staging2 t2
+	ON t1.company = t2.company
+SET t1.industry = t2.industry
+WHERE t1.industry IS NULL 
+AND t2.industry IS NOT NULL;
+
+-- 4. Dropping Columns that are not needed
+-- We delete rows that has both columns as blanks or nulls
+DELETE
+FROM layoffs_staging2
+WHERE total_laid_off IS NULL
+AND percentage_laid_off IS NULL;
+
+-- We drop 'row_num' that we already used and we don't need to use it in the future
+ALTER TABLE layoffs_staging2
+DROP COLUMN row_num;
