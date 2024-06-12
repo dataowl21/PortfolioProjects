@@ -1,4 +1,9 @@
--- Data Cleaning
+/*
+Data Cleaning
+
+Skills used: Creating Tables, Inserting Data, JOINS, Removing Duplicates, Updating Data,Altering Table Structure,Deleting Rows.
+
+*/
 
 SELECT * 
 FROM layoffs;
